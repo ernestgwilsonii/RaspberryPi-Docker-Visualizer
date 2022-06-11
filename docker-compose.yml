@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  vizualizer:
+    image: alexellis2/visualizer-arm:latest
+    hostname: visualizer
+    ports:
+      - mode: ingress
+        target: 8080
+        published: 8080
+        protocol: tcp
+    networks:
+      - vizualizer-net1
+    volumes:
+      - type: bind
+        source: /var/run/docker.sock
+        target: /var/run/docker.sock
+    deploy:
+      labels:
+        local.description: "Visualizer"
+        deunhealth.restart.on.unhealthy: 'true'
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints:
+          - node.role == manager
+
+networks:
+  vizualizer-net1:
